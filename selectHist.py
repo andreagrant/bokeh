@@ -35,3 +35,6 @@ hMax=max(hHist)*1.1
 
 LINE_ARGS=dict(color="blue",line_color=None)
 
+hFig=figure(toolbar_location=None, plot_width=scatterFig.plot_width, plot_height=200,
+            x_range=scatterFig.x_range, y_range=(-hMax,hMax), title=None,
+            min_border=10, min_border_left=50)
