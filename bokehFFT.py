@@ -2,17 +2,21 @@
 #following demo sliders.py and CAO code
 
 import numpy
-from bokeh.models import BoxSelectTool, LassoSelectTool, ColumnDataSource, HBox, VBoxForm
+from bokeh.models import BoxSelectTool, LassoSelectTool, ColumnDataSource, VBox, VBoxForm
 from bokeh.plotting import Figure
 from bokeh.models.widgets import Slider, TextInput
 from bokeh.io import curdoc
 from scipy import misc
-from bokeh.io import gridplot, show
+from bokeh.io import gridplot, show,hplot
+import matplotlib as plt
+import matplotlib.cm as cm
+from bokeh.models.mappers import LinearColorMapper
 
 #get data ... in this case the raw image
 #how to get the image?
-imageFile='P1040376.JPG'
+imageFile='head.png'
 imageRaw=misc.imread(imageFile,1)
+imageRawColor=misc.imread(imageFile)
 
 #take FFT of image
 imageFFT=numpy.fft.fft2(imageRaw)
@@ -53,31 +57,45 @@ filteredFFT=imageFFT*customFilter
 filteredImage=numpy.fft.ifft2(numpy.fft.fftshift(filteredFFT))
 
 
+#sadly, create custom colormaps ...bokeh limits to 11 colors?!
+colormapGrey=cm.get_cmap("Greys")
+bokehpaletteGrey=[plt.colors.rgb2hex(m) for m in colormapGrey(numpy.arange(colormapGrey.N))]
+myColorMapperGrey=LinearColorMapper(bokehpaletteGrey)
+
+colormapHSV=cm.get_cmap("hsv")
+bokehpaletteHSV=[plt.colors.rgb2hex(m) for m in colormapHSV(numpy.arange(colormapHSV.N))]
+myColorMapperHSV=LinearColorMapper(bokehpaletteHSV)
+colormapAu=cm.get_cmap("autumn")
+bokehpaletteAu=[plt.colors.rgb2hex(m) for m in colormapAu(numpy.arange(colormapAu.N))]
+myColorMapperAu=LinearColorMapper(bokehpaletteAu)
 #set up the plots 
 #need 4x4 grid for input image, FFT of input, filter itself (with sliders), and filtered image
 #need size to be dynamic? need ranges to be right
-inputPlot=Figure(plot_height=400, plot_width=400, title="input image",
+inputPlot=Figure(title="input image",
                tools="crosshair, pan, reset, resize, save, wheel_zoom",
-               x_range=[0,1], y_range=[0,1])
+               x_range=[0,10], y_range=[0,10])
 
 #http://bokeh.pydata.org/en/0.10.0/docs/gallery/image.html
-inputPlot.image(image=[imageRaw],x=0,y=0,palette="Greys9")#need dw and dh? 
+inputPlot.image(image=[imageRaw],x=[0],y=[0],dw=[10],dh=[10],palette=myColorMapperGrey.palette)
 #would be awesome to have a custom palette that maps orientation to color like VV
 
-inputFFTPlot=Figure(plot_height=400, plot_width=400, title="FFT of input image",
-               x_range=[0,1], y_range=[0,1])
-inputFFTPlot.image(image=[imageFFT],x=0,y=0,dw=10,dh=10,palette="Greys9")#need dw and dh? 
-
-filterPlot=Figure(plot_height=400, plot_width=400, title="current filter",
-               x_range=[0,1], y_range=[0,1])
-filterPlot.image(image=[customFilter],x=0,y=0,palette="Spectral11")#need dw and dh? 
-
-outputPlot=Figure(plot_height=400, plot_width=400, title="filtered image",
-               x_range=[0,1], y_range=[0,1])
-outputPlot.image(image=[filteredImage],x=0,y=0,palette="Greys9")#need dw and dh? 
+#inputFFTPlot=Figure(title="FFT of input image",
+#               x_range=[0,10], y_range=[0,10])
+#inputFFTPlot.image(image=[imageFFT],x=[0],y=[0],dw=[10],dh=[10],palette="Greys9")
+#
+filterPlot=Figure(title="current filter",
+               x_range=[0,10], y_range=[0,10])
+filterPlot.image(image=[customFilter],x=[0],y=[0],dw=[10],dh=[10])
+#
+outputPlot=Figure(title="filtered image",
+               x_range=[0,10], y_range=[0,10])
+outputPlot.image(image=[numpy.real(filteredImage)],x=[0],y=[0],dw=[10],dh=[10],palette=myColorMapperAu.palette)
 
 #http://bokeh.pydata.org/en/0.10.0/docs/user_guide/layout.html
-p=gridplot([ [inputPlot,inputFFTPlot], [filterPlot,outputPlot] ])
+#p=gridplot([ [inputPlot,inputFFTPlot], [filterPlot,outputPlot] ])
+#p=gridplot([ [inputPlot,None], [filterPlot,None] ])
+#p=hplot(inputPlot,filterPlot,outputPlot)
+p=hplot(inputPlot,filterPlot)
 
 #set up the slider widgets
 text = TextInput(title="title", value="Put your title here")
@@ -85,6 +103,7 @@ spatialFreq = Slider(title="Spatial Frequency (cycles/image)", value=1.0, start=
 bandwidthSF = Slider(title ="spatial frequency bandwidth",value=1.0,start=0.1,end=5.0)
 orientation = Slider(title="Orientation (deg)", value=45.0, start=0.0, end =360.0)
 bandwidthOri = Slider(title ="orientation bandwidth",value=1.0,start=0.1,end=5.0)
+inputs = VBoxForm(children=[text,spatialFreq,bandwidthSF,orientation,bandwidthOri])
 
 #set up callbacks
 #one for each input (text, sf, ori) 
@@ -121,11 +140,11 @@ def updateFilter(attrname, old, new):
     filteredFFT=imageFFT*customFilter
     #reconstruct the filtered image
     filteredImage=numpy.fft.ifft2(numpy.fft.fftshift(filteredFFT))
+    filterPlot.image(image=[customFilter],x=[0],y=[0],dw=[10],dh=[10])
+    outputPlot.image(image=[filteredImage],x=[0],y=[0],dw=[10],dh=[10])
     
 for widget in [spatialFreq,bandwidthSF,orientation,bandwidthOri]:
     widget.on_change('value',updateFilter)
-    
-    
-inputs = VBoxForm(children=[text,spatialFreq,bandwidthSF,orientation,bandwidthOri])
-#curdoc().add_root(HBox(children=[input,plot]))
+
+curdoc().add_root(VBox(children=[inputs]))
     
