@@ -11,12 +11,15 @@ from bokeh.io import gridplot, show,hplot
 import matplotlib as plt
 import matplotlib.cm as cm
 from bokeh.models.mappers import LinearColorMapper
+#from bokeh.client import push_session
 
 #get data ... in this case the raw image
 #how to get the image?
-imageFile='head.png'
-imageRaw=numpy.flipud(misc.imread(imageFile,1))
-imageRawColor=misc.imread(imageFile)
+#imageFile='head.png'
+#imageRaw=numpy.flipud(misc.imread(imageFile,1))
+#imageRawColor=misc.imread(imageFile)
+imageRaw = numpy.random.rand(256,256)
+
 
 #take FFT of image
 imageFFT=numpy.fft.fft2(imageRaw)
@@ -58,16 +61,16 @@ filteredImage=numpy.fft.ifft2(numpy.fft.fftshift(filteredFFT))
 realFilteredImage=numpy.real(filteredImage).astype(numpy.float32)
 
 #sadly, create custom colormaps ...bokeh limits to 11 colors?!
-colormapGrey=cm.get_cmap("Greys")
-bokehpaletteGrey=[plt.colors.rgb2hex(m) for m in colormapGrey(numpy.arange(colormapGrey.N))]
-myColorMapperGrey=LinearColorMapper(bokehpaletteGrey)
+#colormapGrey=cm.get_cmap("Greys")
+#bokehpaletteGrey=[plt.colors.rgb2hex(m) for m in colormapGrey(numpy.arange(colormapGrey.N))]
+#myColorMapperGrey=LinearColorMapper(bokehpaletteGrey)
 
-colormapHSV=cm.get_cmap("hsv")
-bokehpaletteHSV=[plt.colors.rgb2hex(m) for m in colormapHSV(numpy.arange(colormapHSV.N))]
-myColorMapperHSV=LinearColorMapper(bokehpaletteHSV)
-colormapAu=cm.get_cmap("jet")
-bokehpaletteAu=[plt.colors.rgb2hex(m) for m in colormapAu(numpy.arange(colormapAu.N))]
-myColorMapperAu=LinearColorMapper(bokehpaletteAu)
+#colormapHSV=cm.get_cmap("hsv")
+#bokehpaletteHSV=[plt.colors.rgb2hex(m) for m in colormapHSV(numpy.arange(colormapHSV.N))]
+#myColorMapperHSV=LinearColorMapper(bokehpaletteHSV)
+#colormapAu=cm.get_cmap("jet")
+#bokehpaletteAu=[plt.colors.rgb2hex(m) for m in colormapAu(numpy.arange(colormapAu.N))]
+#myColorMapperAu=LinearColorMapper(bokehpaletteAu)
 #set up the plots 
 #need 4x4 grid for input image, FFT of input, filter itself (with sliders), and filtered image
 #need size to be dynamic? need ranges to be right
@@ -77,7 +80,7 @@ inputPlot=Figure(title="input image",
                x_range=[0,10], y_range=[0,10])
 
 #http://bokeh.pydata.org/en/0.10.0/docs/gallery/image.html
-inputPlot.image(image=[imageRaw],x=[0],y=[0],dw=[10],dh=[10],palette=myColorMapperGrey.palette)
+inputPlot.image(image=[imageRaw],x=[0],y=[0],dw=[10],dh=[10])#,palette=myColorMapperGrey.palette)
 #would be awesome to have a custom palette that maps orientation to color like VV
 inputPlot.axis.visible=None
 #inputFFTPlot=Figure(title="FFT of input image",
@@ -87,13 +90,13 @@ inputPlot.axis.visible=None
 filterPlot=Figure(title="current filter",
                plot_width=400,plot_height=400,
                x_range=[0,10], y_range=[0,10])
-filterPlot.image(image=[customFilter],x=[0],y=[0],dw=[10],dh=[10],palette=myColorMapperAu.palette)
+filterPlot.image(image=[customFilter],x=[0],y=[0],dw=[10],dh=[10],palette="Spectral11")#,palette=myColorMapperAu.palette)
 filterPlot.axis.visible=None
-#
+
 outputPlot=Figure(title="filtered image",
                plot_width=400,plot_height=400,
                x_range=[0,10], y_range=[0,10])
-outputPlot.image(image=[realFilteredImage],x=[0],y=[0],dw=[10],dh=[10],palette=myColorMapperGrey.palette)
+outputPlot.image(image=[realFilteredImage],x=[0],y=[0],dw=[10],dh=[10])#,palette=myColorMapperGrey.palette)
 outputPlot.axis.visible=None
 
 
@@ -119,6 +122,8 @@ inputs = VBoxForm(children=[spatialFreq,bandwidthSF,orientation,bandwidthOri])
 #    outputPlot.title=text.value
 #initiate action if needed
 #text.on_change('value',updateText)
+#curdoc().add_root(VBox(children=[inputs,p]))
+#session = push_session(curdoc())
 
 def updateFilter(attrname, old, new):
     #get the slider values
@@ -150,8 +155,9 @@ def updateFilter(attrname, old, new):
     filterPlot.image(image=[customFilter])
     outputPlot.image(image=[realFilteredImage])
     
+    
 for widget in [spatialFreq,bandwidthSF,orientation,bandwidthOri]:
     widget.on_change('value',updateFilter)
 
-curdoc().add_root(VBox(children=[inputs]))
-    
+#session.loop_until_closed()
+curdoc().add_root(VBox(inputs, p, width=1100))

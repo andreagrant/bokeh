@@ -50,7 +50,7 @@ vHist, vEdges=numpy.histogram(y,bins=30)
 vZeros=numpy.zeros(len(vEdges)-1)
 vMax=max(vHist)*1.1
 
-toolbarHeight=42 #adjust toolbar hegith :(
+toolbarHeight=42 #adjust toolbar height :(
 
 vFig=figure(toolbar_location=None, plot_width=200, plot_height=scatterFig.plot_height+toolbarHeight-10,
             x_range=(-vMax,vMax), y_range=scatterFig.y_range, title=None,
