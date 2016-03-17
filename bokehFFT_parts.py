@@ -9,7 +9,8 @@ imageRaw = numpy.random.rand(256,256)
 source = ColumnDataSource(data={'image': [imageRaw]})
 
 
-p = Figure(x_range=[0, 10], y_range=[0, 10],plot_width=400,plot_height=400,tools="crosshair, box_select, pan, reset, resize, save, wheel_zoom")
+p = Figure(x_range=[0, 10], y_range=[0, 10],plot_width=400,plot_height=400,
+           tools="crosshair, box_select, pan, reset, resize, save, wheel_zoom")
 p.image(image="image", x=[0], y=[0], dw=[10], dh=[10],source=source)
 p.select(BoxSelectTool).select_every_mousemove=False
 imageFFT = numpy.fft.fft2(imageRaw)
