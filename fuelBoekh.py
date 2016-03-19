@@ -4,7 +4,7 @@ __author__ = 'agrant'
 import numpy
 import os
 import xlrd
-os.chdir('/Users/agrant/codes/d3learning')
+#os.chdir('/Users/agrant/codes/d3learning')
 
 
 xbook=xlrd.open_workbook('real_prices.xlsx')
