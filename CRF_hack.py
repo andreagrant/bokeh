@@ -20,7 +20,7 @@ CNRslider = Slider(title="CNR", value=1.0, start=0.0, end=2.0)
  
 
 
-
+#https://github.com/bokeh/bokeh/blob/master/tests/glyphs/MultiLine.py
 #set up staring data set
 CNR=CNRslider.value
 response = contrast**alpha + baseline
@@ -43,7 +43,8 @@ p1 = Figure(plot_width=300,
                x_range=[0.0, 1.0],
                y_range=[-0.5, 1.5])
 
-
+#oh, try this next--it's even simpler
+#http://thankcoder.com/questions/j8zde/interacting-with-multi-line-in-bokeh
 lineGlyph=MultiLine(xs="xs", ys="ys")
 p1.add_glyph(sourceLine,lineGlyph)
 p2 = Figure(plot_width=300,
