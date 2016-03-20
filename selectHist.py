@@ -72,6 +72,7 @@ layout=vplot(hplot(scatterFig,vFig),hplot(hFig,Paragraph(width=200)),width=800,h
 
 def update(attr,old,new):
     inds=numpy.array(new['1d']['indices'])
+    numpy.savetxt('testselect.txt',inds)
     if len(inds)==0 or len(inds)==len(x):
         hHist1,hHist2=hZeros,hZeros
         vHist1,vHist2=vZeros,vZeros
