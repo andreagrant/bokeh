@@ -16,9 +16,9 @@ p.select(BoxSelectTool).select_every_mousemove=False
 imageFFT = numpy.fft.fft2(imageRaw)
 imageFFT=numpy.fft.fftshift(imageFFT)
 
-x,y=numpy.meshgrid(range(imageFFT.shape[1]),range(imageFFT.shape[0]),indexing='xy')
-x = x - imageFFT.shape[1]/2
-y = y - imageFFT.shape[0]/2
+x0,y0=numpy.meshgrid(range(imageFFT.shape[1]),range(imageFFT.shape[0]),indexing='xy')
+x = x0 - imageFFT.shape[1]/2
+y = y0 - imageFFT.shape[0]/2
 r = numpy.sqrt(x*x+y*y) # units are pixels
 theta = numpy.arctan2(x,y)
 fband=[16,16]
@@ -55,6 +55,9 @@ p3.image(image="image", x=[0], y=[0], dw=[10], dh=[10],source=source3)
 p.axis.visible=None
 p2.axis.visible=None
 p3.axis.visible=None
+
+#create a giant array of inivisble circles to be selected, thus giving me coordinates in the image
+p.circle(numpy.ravel(x0),numpy.ravel(y0),size=10,color="navy",alpha=0.5)
 
 orientation = Slider(title="Orientation (deg)", value=45.0, start=0.0, end =360.0)
 orientationWidth = Slider(title="Orientation bandwidth (deg)", value=22.5, start=0.0, end =45.0)
