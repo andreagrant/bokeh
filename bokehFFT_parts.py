@@ -12,7 +12,10 @@ source = ColumnDataSource(data={'image': [imageRaw]})
 p = Figure(x_range=[0, 10], y_range=[0, 10],plot_width=400,plot_height=400,
            tools="crosshair, box_select, pan, reset, resize, save, wheel_zoom")
 p.image(image="image", x=[0], y=[0], dw=[10], dh=[10],source=source)
-p.select(BoxSelectTool).select_every_mousemove=False
+
+
+
+
 imageFFT = numpy.fft.fft2(imageRaw)
 imageFFT=numpy.fft.fftshift(imageFFT)
 
@@ -24,6 +27,12 @@ theta = numpy.arctan2(x,y)
 fband=[16,16]
 SF = numpy.exp(-((r-fband[0])**2/(2.0*fband[1]*fband[1])))  
 #SF=numpy.ones(r.shape)    
+
+#create a giant array of inivisble circles to be selected, thus giving me coordinates in the image
+p.circle(numpy.ravel(x0)*10.0/imageFFT.shape[1],numpy.ravel(y0)*10.0/imageFFT.shape[0],size=0.1,color="navy",alpha=0.5)
+p.select(BoxSelectTool).select_every_mousemove=False
+
+
     
 #ori=45*(numpy.pi/180.0)
 #oband=[ori*0.95, ori*1.05]
@@ -56,8 +65,6 @@ p.axis.visible=None
 p2.axis.visible=None
 p3.axis.visible=None
 
-#create a giant array of inivisble circles to be selected, thus giving me coordinates in the image
-p.circle(numpy.ravel(x0),numpy.ravel(y0),size=10,color="navy",alpha=0.5)
 
 orientation = Slider(title="Orientation (deg)", value=45.0, start=0.0, end =360.0)
 orientationWidth = Slider(title="Orientation bandwidth (deg)", value=22.5, start=0.0, end =45.0)
@@ -84,13 +91,13 @@ def update(attrname,old,new):
     SF = numpy.exp(-((r-fband[0])**2/(2.0*fband[1]*fband[1])))  
 
     customFilter = SF*(t1 + t2)
-    source2 = ColumnDataSource(data={'image': [customFilter]})
-    p2.image(image="image", x=[0], y=[0], dw=[10], dh=[10],source=source2,palette="Spectral11")
+    source2.data['image'] =customFilter
+    #p2.image(image="image", x=[0], y=[0], dw=[10], dh=[10],source=source2,palette="Spectral11")
     filteredFFT = imageFFT*customFilter
     filteredImage = numpy.fft.ifft2(numpy.fft.fftshift(filteredFFT))
     filteredImageReal=numpy.real(filteredImage)
-    source3 = ColumnDataSource(data={'image': [filteredImageReal]})
-    p3.image(image="image", x=[0], y=[0], dw=[10], dh=[10],source=source3)
+    source3.data['image']=filteredImageReal
+    #p3.image(image="image", x=[0], y=[0], dw=[10], dh=[10],source=source3)
     thisTitle="Ori: %2.1f [%2.1f, %2.1f], SF: %2.1f, %2.1f"%(orientation.value,oband[0]*180/numpy.pi,
                 oband[1]*180/numpy.pi,thisSF, sfWidth)
     p3.title=thisTitle
@@ -98,8 +105,8 @@ def update(attrname,old,new):
 def updateSelection(attrname,old,new):
     inds=numpy.array(new)
     imageRawSelect = imageRaw[inds]
-    source = ColumnDataSource(data={'image': [imageRawSelect]})
-    p.image(image="image", x=[0], y=[0], dw=[10], dh=[10],source=source)
+    source.data['image']=imageRawSelect
+    #p.image(image="image", x=[0], y=[0], dw=[10], dh=[10],source=source)
 
     imageFFT = numpy.fft.fft2(imageRawSelect)
     imageFFT=numpy.fft.fftshift(imageFFT)
@@ -124,13 +131,13 @@ def updateSelection(attrname,old,new):
     SF = numpy.exp(-((r-fband[0])**2/(2.0*fband[1]*fband[1])))  
 
     customFilter = SF*(t1 + t2)
-    source2 = ColumnDataSource(data={'image': [customFilter]})
-    p2.image(image="image", x=[0], y=[0], dw=[10], dh=[10],source=source2,palette="Spectral11")
+    source2.data['image']=customFilter
+    #p2.image(image="image", x=[0], y=[0], dw=[10], dh=[10],source=source2,palette="Spectral11")
     filteredFFT = imageFFT*customFilter
     filteredImage = numpy.fft.ifft2(numpy.fft.fftshift(filteredFFT))
     filteredImageReal=numpy.real(filteredImage)
-    source3 = ColumnDataSource(data={'image': [filteredImageReal]})
-    p3.image(image="image", x=[0], y=[0], dw=[10], dh=[10],source=source3)
+    source3.data['image']=filteredImageReal
+    #p3.image(image="image", x=[0], y=[0], dw=[10], dh=[10],source=source3)
     thisTitle="Ori: %2.1f [%2.1f, %2.1f], SF: %2.1f, %2.1f"%(orientation.value,oband[0]*180/numpy.pi,
                 oband[1]*180/numpy.pi,thisSF, sfWidth)
     p3.title=thisTitle
