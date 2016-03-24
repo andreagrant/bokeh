@@ -106,6 +106,9 @@ def updateSelection(attrname,old,new):
     inds=numpy.array(new)
     imageRawSelect = imageRaw[inds]
     source.data['image']=imageRawSelect
+    numpy.savetxt('origImage.txt',imageRaw)
+    numpy.savetxt('selImage.txt',imageRawSelect)
+    numpy.savetxt('selInds.txt',inds)
     #p.image(image="image", x=[0], y=[0], dw=[10], dh=[10],source=source)
 
     imageFFT = numpy.fft.fft2(imageRawSelect)
