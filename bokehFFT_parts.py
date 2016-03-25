@@ -29,7 +29,8 @@ SF = numpy.exp(-((r-fband[0])**2/(2.0*fband[1]*fband[1])))
 #SF=numpy.ones(r.shape)    
 
 #create a giant array of inivisble circles to be selected, thus giving me coordinates in the image
-p.circle(numpy.ravel(x0)*10.0/imageFFT.shape[1],numpy.ravel(y0)*10.0/imageFFT.shape[0],size=0.1,color="navy",alpha=0.5)
+circleSource=ColumnDataSource(data={'x':[numpy.ravel(x0)*10.0/imageFFT.shape[1]],'y':[numpy.ravel(y0)*10.0/imageFFT.shape[0]]})
+p.circle('x','y',size=0.1,color="navy",alpha=0.5,source=circleSource)
 p.select(BoxSelectTool).select_every_mousemove=False
 
 
@@ -72,7 +73,6 @@ spatialFreq = Slider(title="Spatial frequency (cycles/image)", value=16.0, start
 spatialFreqWidth = Slider(title="spatial frequency bandwidth", value=0.0, start=0.0, end =16.0)
 inputs=VBox(children=[orientation,orientationWidth,spatialFreq, spatialFreqWidth])
 figs=HBox(children=[p,p2,p3])
-curdoc().add_root(HBox(children=[inputs,figs],width=800))
 
 def update(attrname,old,new):
     ori=orientation.value*(numpy.pi/180.0)
@@ -149,3 +149,4 @@ def updateSelection(attrname,old,new):
 for widget in [orientation,orientationWidth,spatialFreq, spatialFreqWidth]:
     widget.on_change('value',update)
 p.on_change('selected',updateSelection)
+curdoc().add_root(HBox(children=[inputs,figs],width=800))
