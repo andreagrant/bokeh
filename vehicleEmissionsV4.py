@@ -2,9 +2,13 @@ import numpy
 import matplotlib.pyplot as plt
 import os
 import xlrd
+from bokeh.plotting import Figure
+from bokeh.io import curdoc
+from bokeh.models import HBox, VBoxForm, VBox, ColumnDataSource, BoxSelectTool
+
 
 plotFlag=1
-os.chdir('/Users/agrant/codes/vehicleEmissions')
+os.chdir('/Users/agrant/codes/bokeh')
 fid=open('Net_generation_for_electric_power.csv','r')
 #http://www.eia.gov/electricity/data.cfm#consumption
 #electricty generation by STATE and FUEL TYPE. monthly data going back 20? years
