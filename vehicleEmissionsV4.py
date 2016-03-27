@@ -5,11 +5,13 @@ import xlrd
 from bokeh.plotting import Figure
 from bokeh.io import curdoc
 from bokeh.models import HBox, VBoxForm, VBox, ColumnDataSource, BoxSelectTool
-
-
+from bokeh.sampledata.sample_geojson import geojson
+#http://bokeh.pydata.org/en/0.11.1/docs/user_guide/geo.html
+geoSouce=GeoJSONDataSource(geojson=geojson)
+#http://bokeh.pydata.org/en/latest/docs/gallery/choropleth.html
 plotFlag=1
-os.chdir('/Users/agrant/codes/bokeh')
-fid=open('Net_generation_for_electric_power.csv','r')
+myPath=os.path.dirname(os.path.realpath(__file__))
+fid=open(os.join(myPath,'Net_generation_for_electric_power.csv'),'r')
 #http://www.eia.gov/electricity/data.cfm#consumption
 #electricty generation by STATE and FUEL TYPE. monthly data going back 20? years
 #FOR RESIDENTIAL ELECTRICITY GENERATION ONLY. these values do not include electricit
