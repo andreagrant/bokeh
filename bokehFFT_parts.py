@@ -44,7 +44,7 @@ t1 = numpy.exp(-(t1**2/(2*oband[1]*oband[1]))) # and put a gaussian around it
 t2 = numpy.angle(numpy.exp(complex(0,1)*(theta-oband[0]-numpy.pi)))
 t2 = numpy.exp(-(t2**2/(2*oband[1]*oband[1])))
 customFilter = SF*(t1 + t2)
-numpy.savetxt('bokehCF.txt',customFilter)
+#numpy.savetxt('bokehCF.txt',customFilter)
 source2 = ColumnDataSource(data={'image': [customFilter]})
 
 p2 = Figure(x_range=[0, 10], y_range=[0, 10],plot_width=400,plot_height=400)
@@ -148,5 +148,6 @@ def updateSelection(attrname,old,new):
 
 for widget in [orientation,orientationWidth,spatialFreq, spatialFreqWidth]:
     widget.on_change('value',update)
-p.on_change('selected',updateSelection)
+#p.on_change('selected',updateSelection)
 curdoc().add_root(HBox(children=[inputs,figs],width=800))
+#circleSource.on_change('selected',updateSelection)
