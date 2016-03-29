@@ -151,3 +151,4 @@ for widget in [orientation,orientationWidth,spatialFreq, spatialFreqWidth]:
 #p.on_change('selected',updateSelection)
 curdoc().add_root(HBox(children=[inputs,figs],width=800))
 #circleSource.on_change('selected',updateSelection)
+p.circleSource.on_change('value',update)
