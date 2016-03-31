@@ -29,9 +29,12 @@ x = x0 - imageFFT.shape[1]/2
 y = y0 - imageFFT.shape[0]/2
 
 
+p2=Figure(x_range=[0, 10], y_range=[0, 10],plot_width=400,plot_height=400,
+           tools="crosshair, box_select, pan, reset, resize, save, wheel_zoom")
 circleSource=ColumnDataSource(data={'x':[numpy.ravel(x0)*10.0/imageFFT.shape[1]],'y':[numpy.ravel(y0)*10.0/imageFFT.shape[0]]})
-scatterPlot=p.scatter('x','y',size=1,color="navy",alpha=0.5,source=circleSource)
-p.select(BoxSelectTool).select_every_mousemove=False
+scatterPlot=p2.circle('x','y',size=1,color="navy",alpha=1,source=circleSource)
+numpy.savetxt('scatter.txt',x0)
+p2.select(BoxSelectTool).select_every_mousemove=False
 
 orientation = Slider(title="Orientation (deg)", value=45.0, start=0.0, end =360.0)
 orientationWidth = Slider(title="Orientation bandwidth (deg)", value=22.5, start=0.0, end =45.0)
@@ -39,7 +42,7 @@ spatialFreq = Slider(title="Spatial frequency (cycles/image)", value=16.0, start
 spatialFreqWidth = Slider(title="spatial frequency bandwidth", value=0.0, start=0.0, end =16.0)
 inputs=VBox(children=[orientation,orientationWidth,spatialFreq, spatialFreqWidth])
 #figs=HBox(children=[p,p2,p3])
-figs=HBox(children=[p])
+figs=HBox(children=[p,p2])
 
 #renderer=p.select(dict(name="circle"))
 #circle_ds=renderer[0].data_source
@@ -54,5 +57,5 @@ def updateSelection(attrname,old,new):
 curdoc().add_root(HBox(children=[inputs,figs],width=800))
 #p.on_change('selected',updateSelection)
 #p.circleSource.on_change('selected',updateSelection)
-scatterPlot.data_source.on_change('selected',updateSelection)
+#scatterPlot.data_source.on_change('selected',updateSelection)
 #circle_ds.on_change('selected',updateSelection)
