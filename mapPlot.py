@@ -18,7 +18,7 @@ figs=HBox(children=[plotMap])
 #curdoc().add_root(HBox(children=[figs],width=1200))
 
 #now, to figure out which state is selected
-
+#https://groups.google.com/a/continuum.io/forum/#!topic/bokeh/XGvStBxaz_M
 def on_selection_change(attr, old, new):
     thisInd=new['1d']['indices']
     print thisInd
