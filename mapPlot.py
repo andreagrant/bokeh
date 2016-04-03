@@ -25,6 +25,15 @@ plotMap.patches(state_xs,state_ys,fill_alpha=0.5,line_color="black",line_width=2
 myPath=os.path.dirname(os.path.abspath(__file__))
 rawData=pandas.read_csv(os.path.join(myPath,'Net_generation_for_electric_power.csv'),header=4)
 
+#need to split the first column into two columns
+#
+#https://gist.github.com/bsweger/e5817488d161f37dcbd2
+# Split delimited values in a DataFrame column into two new columns
+#df['new_col1'], df['new_col2'] = zip(*df['original_col'].apply(lambda x: x.split(': ', 1)))
+
+
+#need to identify the index column .... that's maybe not going to work here
+
 #create a column data source that will be updated in the on_selection_change :)
 #fuelData=ColumnDataSource()
 #create the bar chart
