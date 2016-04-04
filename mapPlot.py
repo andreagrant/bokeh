@@ -31,10 +31,18 @@ rawData=pandas.read_csv(os.path.join(myPath,'Net_generation_for_electric_power.c
 # Split delimited values in a DataFrame column into two new columns
 #df['new_col1'], df['new_col2'] = zip(*df['original_col'].apply(lambda x: x.split(': ', 1)))
 
+#first, delete rows without the semicolon
+
+rawData=rawData[rawData.description.str.find(':')>0]
+
+rawData['location'], rawData['fuel']=zip(*rawData['description'].apply(lambda x: x.split(' : ',1)))
+
 
 #need to identify the index column .... that's maybe not going to work here
+#oh, it has some index already. just leave that as is
 
 #create a column data source that will be updated in the on_selection_change :)
+#do I do my pandas slicing first and make a columndatasource of that? or can i do pandas actions on the CDS?
 #fuelData=ColumnDataSource()
 #create the bar chart
 plotFuel=figure(plot_width=400, plot_height=200)
