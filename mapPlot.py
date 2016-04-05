@@ -3,6 +3,7 @@
 from bokeh.plotting import figure
 from bokeh.sampledata.us_states import data as states
 from bokeh.models import HBox, ColumnDataSource
+from bokeh.charts import Bar
 from bokeh.io import curdoc
 import pandas
 import os
@@ -43,11 +44,17 @@ rawData['location'], rawData['fuel']=zip(*rawData['description'].apply(lambda x:
 
 #create a column data source that will be updated in the on_selection_change :)
 #do I do my pandas slicing first and make a columndatasource of that? or can i do pandas actions on the CDS?
+
+#http://stackoverflow.com/questions/27642179/bokeh-widget-to-select-a-group-from-dataframe
+#looks like I update the CDS WITH the new groupby within the update widget, so I'll just make placeholder CDS for now
+
+fuelByLoc=rawData.groupby(['fuel','location']).sum()
+
 #fuelData=ColumnDataSource()
 #create the bar chart
-plotFuel=figure(plot_width=400, plot_height=200)
-
-figs=HBox(children=[plotMap])
+#figFuel=figure(plot_width=400, plot_height=200)
+plotFuel=Bar(fuelByLoc['United States'])
+figs=HBox(children=[plotMap,plotFuel])
 #this below makes two copies othe map :(
 #curdoc().add_root(HBox(children=[figs],width=1200))
 
