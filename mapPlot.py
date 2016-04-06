@@ -23,7 +23,8 @@ plotMap.patches(state_xs,state_ys,fill_alpha=0.5,line_color="black",line_width=2
 #eventually, use the API to pull it from 
 #http://www.eia.gov/electricity/data.cfm#consumption
 #electricity generation by state and fuel type, monthly, for residential gen only
-myPath=os.path.dirname(os.path.abspath(__file__))
+#myPath=os.path.dirname(os.path.abspath(__file__))
+myPath='/Users/agrant/Documents/UMN/python/bokeh'
 rawData=pandas.read_csv(os.path.join(myPath,'Net_generation_for_electric_power.csv'),header=4)
 
 #need to split the first column into two columns
@@ -48,7 +49,13 @@ rawData['location'], rawData['fuel']=zip(*rawData['description'].apply(lambda x:
 #http://stackoverflow.com/questions/27642179/bokeh-widget-to-select-a-group-from-dataframe
 #looks like I update the CDS WITH the new groupby within the update widget, so I'll just make placeholder CDS for now
 
-fuelByLoc=rawData.groupby(['fuel','location']).sum()
+fuelByLoc=rawData.groupby(['location','fuel']).sum()
+#rawByLoc=rawData.groupby('location').sum()
+
+rawByLoc=rawData.groupby('location')
+fuelByLoc_2=rawByLoc['fuel'].sum()
+
+#http://bconnelly.net/2013/10/summarizing-data-in-python-with-pandas/
 
 #fuelData=ColumnDataSource()
 #create the bar chart
