@@ -38,7 +38,9 @@ rawData=pandas.read_csv(os.path.join(myPath,'Net_generation_for_electric_power.c
 rawData=rawData[rawData.description.str.find(':')>0]
 
 rawData['location'], rawData['fuel']=zip(*rawData['description'].apply(lambda x: x.split(' : ',1)))
-
+del rawData['description']
+del rawData['units']
+del rawData['source key']
 
 #need to identify the index column .... that's maybe not going to work here
 #oh, it has some index already. just leave that as is
@@ -49,11 +51,13 @@ rawData['location'], rawData['fuel']=zip(*rawData['description'].apply(lambda x:
 #http://stackoverflow.com/questions/27642179/bokeh-widget-to-select-a-group-from-dataframe
 #looks like I update the CDS WITH the new groupby within the update widget, so I'll just make placeholder CDS for now
 
-fuelByLoc=rawData.groupby(['location','fuel']).sum()
+
+fuelByLoc=rawData.groupby(['location','fuel'])
 #rawByLoc=rawData.groupby('location').sum()
 
 rawByLoc=rawData.groupby('location')
-fuelByLoc_2=rawByLoc['fuel'].sum()
+rawByFuel=rawData.groupby('fuel')
+fuelByLoc_2=rawByLoc['fuel'].mean()
 
 #http://bconnelly.net/2013/10/summarizing-data-in-python-with-pandas/
 
