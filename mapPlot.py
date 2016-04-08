@@ -61,6 +61,13 @@ fuelByLoc_2=rawByLoc['fuel'].mean()
 
 #http://bconnelly.net/2013/10/summarizing-data-in-python-with-pandas/
 
+
+#http://chrisalbon.com/python/pandas_apply_operations_to_groups.html
+groupbyFuel=rawData['fuel'].groupby(rawData['location'])
+
+#i think the problem is i have 3 dimensions--I want to collapse across time first? there's something I don't get here
+
+
 #fuelData=ColumnDataSource()
 #create the bar chart
 #figFuel=figure(plot_width=400, plot_height=200)
