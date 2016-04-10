@@ -41,7 +41,7 @@ rawData['location'], rawData['fuel']=zip(*rawData['description'].apply(lambda x:
 del rawData['description']
 del rawData['units']
 del rawData['source key']
-
+#%%
 #need to identify the index column .... that's maybe not going to work here
 #oh, it has some index already. just leave that as is
 
@@ -68,6 +68,30 @@ groupbyFuel=rawData['fuel'].groupby(rawData['location'])
 #i think the problem is i have 3 dimensions--I want to collapse across time first? there's something I don't get here
 
 
+
+#%%
+#take the average of each row
+
+#%%
+#do it the old fashioned way
+fuelTypes=pandas.unique(rawData['fuel'].ravel())
+for iS,thisState in enumerate(stateNames):
+    thisData=rawData.loc[rawData['location']==thisState]
+    for iF, thisFuel in enumerate(fuelTypes):
+        thisFuelData=thisData.loc[thisData['fuel']==thisFuel]
+        thisMean=thisFuelData.mean()
+       
+       
+       
+#%%
+
+    
+#try taking the mean across the date columns
+colNames=rawData.columns
+colNames=colNames[:-2]
+rawData[colNames].mean(axis=1) 
+#gives me all NaNs
+    
 #fuelData=ColumnDataSource()
 #create the bar chart
 #figFuel=figure(plot_width=400, plot_height=200)
