@@ -4,7 +4,7 @@ from bokeh.plotting import figure
 from bokeh.sampledata.us_states import data as states
 from bokeh.models import HBox,VBox, ColumnDataSource
 from bokeh.charts import Bar
-from bokeh.io import curdoc
+from bokeh.io import curdoc, hplot
 import csv
 import os
 import numpy
@@ -30,7 +30,7 @@ for (x,y) in zip(akX,akY):
 state_xs[AKind]=keepX
 state_ys[AKind]=keepY
 
-plotMap = figure(toolbar_location="right",plot_width=700,plot_height=500,tools="tap")
+plotMap = figure(toolbar_location="right",plot_width=800,plot_height=650,tools="tap")
 plotMap.patches(state_xs,state_ys,fill_alpha=0.5,line_color="black",line_width=2,line_alpha=0.3,name="states")
 
 #add a bar chart of the data
@@ -39,8 +39,8 @@ plotMap.patches(state_xs,state_ys,fill_alpha=0.5,line_color="black",line_width=2
 #eventually, use the API to pull it from 
 #http://www.eia.gov/electricity/data.cfm#consumption
 #electricity generation by state and fuel type, monthly, for residential gen only
-#myPath=os.path.dirname(os.path.abspath(__file__))
-myPath='/Users/agrant/Documents/UMN/python/bokeh/'
+myPath=os.path.dirname(os.path.abspath(__file__))
+#myPath='/Users/agrant/Documents/UMN/python/bokeh/'
 #maybe someday I can learn pandas, but a week of hacking at this dataset with
 #pandas has only infuriated me. Taking the easy way out of doing it by hand
 inFile='Net_generation_for_electric_power.csv'
@@ -108,21 +108,24 @@ inds=[i for i,item in enumerate(location) if item=='United States']
 theseFuels=[fuel[i] for i in inds]
 USData=[100*d/locTotals['United States'] for d in dataMean[inds]]
 
-print(inds,USData)
+#print(inds,USData)
 stateData=[0 for d in USData]
 fuels_US=[c+":0.1" for c in theseFuels]
 fuels_state=[c+":0.5" for c in theseFuels]
 fuelData=ColumnDataSource(data=dict(fuels=fuels_state,amount=stateData,amountHalf=[d/2 for d in stateData]))
 
 #create the bar chart
-figFuel=figure(plot_width=600, plot_height=600,title='Residential electricity generation by fuel type',
-               x_range=theseFuels,y_range=[0,100])
-figFuel.rect(x=fuels_US,y=[d/2 for d in USData],width=0.4, height=USData,color="blue",alpha=0.6)
-figFuel.rect(x='fuels',y='amountHalf',width=0.4, height='amount',source=fuelData,color="silver",alpha=1.0)
+figFuel=figure(plot_width=650, plot_height=650,title='Residential electricity generation by fuel type',
+               x_range=theseFuels,y_range=[0,100],y_axis_label='Percent of all generation')
+figFuel.rect(x=fuels_US,y=[d/2 for d in USData],width=0.4, height=USData,color="SlateGray",alpha=0.6)#silver
+figFuel.rect(x='fuels',y='amountHalf',width=0.4, height='amount',source=fuelData,color="blue",alpha=1.0)
 figFuel.xaxis.major_label_orientation = numpy.pi/3
+figFuel.xaxis.axis_label_text_font_size = "18pt"
 
+#figs=HBox(children=[figFuel,plotMap])
+#figs=HBox(figFuel,plotMap)
+figs=hplot(figFuel,plotMap)# this worked!!!! :)
 
-figs=HBox(children=[figFuel,plotMap])
 #this below makes two copies of the map :(
 #curdoc().add_root(HBox(children=[figs],width=1200))
 
