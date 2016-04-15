@@ -1,6 +1,6 @@
 #http://bokeh.pydata.org/en/0.11.1/docs/gallery/choropleth.html
 
-from bokeh.plotting import figure
+from bokeh.plotting import figure, output_file, show
 from bokeh.sampledata.us_states import data as states
 from bokeh.models import HBox,VBox, ColumnDataSource
 from bokeh.charts import Bar
@@ -8,6 +8,9 @@ from bokeh.io import curdoc, hplot
 import csv
 import os
 import numpy
+#from bokeh.embed import file_html
+# output to static HTML file
+output_file("mapPlot.html", title="fuel")
 
 #del states["AK"]
 state_xs=[states[code]["lons"] for code in states]
@@ -158,3 +161,5 @@ renderer=plotMap.select(dict(name="states"))
 patches_ds=renderer[0].data_source
 
 patches_ds.on_change('selected',on_selection_change)
+
+show(figs)
